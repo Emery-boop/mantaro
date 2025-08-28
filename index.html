@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANTARO | Coming Soon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --white: #ffffff;
+            --black: #000000;
+            --dark-bg: #0a0a0a;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #616161;
+            --charcoal: #333333;
+            --accent: #7a7a7a;
+            --accent-light: #9e9e9e;
+            --accent-dark: #555555;
+            --gold: #c6a467;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--black);
+            background-color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: var(--white);
+            position: relative;
+            z-index: 999;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-img {
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-img img {
+            height: 100%;
+            width: auto;
+            filter: grayscale(100%) contrast(200%);
+        }
+        
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--black);
+            letter-spacing: 1.5px;
+            margin-left: 8px;
+        }
+        
+        /* Coming Soon Hero */
+        .coming-soon-hero {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+            /* Background image with overlay */
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('WhatsApp Image 2025-08-27 at 23.51.31_19d167c3.jpg') no-repeat center center/cover;
+            color: var(--white);
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 40px;
+            background-color: rgba(10, 10, 10, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .hero-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--gold);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+        
+        /* Notification Form */
+        .notification-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto 40px;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+        }
+        
+        .notification-input {
+            padding: 15px 20px;
+            border: none;
+            outline: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-input:focus {
+            border-color: var(--gold);
+            background-color: var(--white);
+        }
+        
+        .notification-btn {
+            background-color: var(--gold);
+            color: var(--white);
+            padding: 15px 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-btn:hover {
+            background-color: var(--dark-gray);
+            transform: translateY(-2px);
+        }
+        
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--white);
+            color: var(--black);
+            padding: 15px 25px;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+        }
+        
+        .success-message.show {
+            transform: translateX(0);
+        }
+        
+        .success-message i {
+            color: #4caf50;
+            font-size: 20px;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--black);
+            color: var(--white);
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 2px;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            background-color: var(--gold);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--white);
+            color: var(--white);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--white);
+            color: var(--black);
+        }
+        
+        /* Newsletter Section */
+        .newsletter {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .newsletter-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .newsletter-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+        }
+        
+        .newsletter-logo img {
+            width: 100%;
+            height: auto;
+            filter: grayscale(100%) contrast(200%);
+        }
+        
+        .newsletter-title {
+            font-size: 2.2rem;
+            margin-bottom: 0;
+            color: var(--gold);
+        }
+        
+        .newsletter-text {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            outline: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-input:focus {
+            border-color: var(--gold);
+            background-color: var(--white);
+        }
+        
+        .newsletter-btn {
+            background-color: var(--gold);
+            color: var(--white);
+            padding: 0 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-btn:hover {
+            background-color: var(--dark-gray);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 60px 0 30px;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-col h4 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-col h4:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--gold);
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--gold);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--gold);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Styles */
+        @media (min-width: 768px) {
+            .notification-form {
+                flex-direction: row;
+            }
+            
+            .notification-btn {
+                width: auto;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .btn {
+                display: block;
+                margin: 10px auto;
+                width: 80%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .newsletter-input {
+                margin-bottom: 10px;
+            }
+            
+            .notification-form {
+                flex-direction: column;
+            }
+            
+            .notification-btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                width: 90%;
+            }
+            
+            .logo-text {
+                font-size: 24px;
+            }
+            
+            .success-message {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+            }
+            
+            .newsletter-logo {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .newsletter-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="logo">
+            <div class="logo-img">
+                <!-- Replace with your actual logo image -->
+                <img src="WhatsApp Image 2025-08-27 at 23.44.07_a5c4096a.jpg" alt="MANTARO Logo">
+            </div>
+            <div class="logo-text">MANTARO</div>
+        </div>
+    </header>
+
+    <!-- Coming Soon Hero Section -->
+    <section class="coming-soon-hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Coming Soon</h1>
+            <p class="hero-subtitle">We're crafting an extraordinary online experience. Our new website will redefine luxury fashion e-commerce with exclusive collections, personalized service, and seamless shopping.</p>
+            
+            <!-- Notification Form -->
+            <form class="notification-form" id="notification-form">
+                <input type="email" class="notification-input" placeholder="Enter your email for updates" required id="notification-email">
+                <button type="submit" class="notification-btn" id="notify-btn">
+                    <span id="notify-text">Notify Me</span>
+                    <div class="spinner" id="notify-spinner"></div>
+                </button>
+            </form>
+            
+            <div class="action-buttons">
+                <a href="mailto:copeelglobal@gmail.com" class="btn btn-outline">Contact Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-header">
+                <div class="newsletter-logo">
+                    <!-- Replace with your actual logo image -->
+                    <img src="WhatsApp_Image_2025-08-27_at_23.44.07_3a4ea33e-removebg-preview.png" alt="MANTARO Logo">
+                </div>
+                <h2 class="newsletter-title">Join Our Exclusive Mailing List</h2>
+            </div>
+            <p class="newsletter-text">Be the first to know when we launch and receive a special welcome offer for our inaugural collection.</p>
+            
+            <form class="newsletter-form" id="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required id="newsletter-email">
+                <button type="submit" class="newsletter-btn" id="subscribe-btn">
+                    <span id="subscribe-text">Subscribe</span>
+                    <div class="spinner" id="subscribe-spinner"></div>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h4>MANTARO</h4>
+                    <p>Luxury fashion apparel designed for the modern individual who appreciates quality, style, and sophistication.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Visit Us</h4>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-phone"></i> +234 706 861 3784</li>
+                        <li><i class="fas fa-envelope"></i> copeelglobal@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 MANTARO. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Message Element -->
+    <div class="success-message" id="success-message">
+        <i class="fas fa-check-circle"></i>
+        <span id="message-text">Thank you for subscribing!</span>
+    </div>
+
+    <script>
+        // Initialize Supabase
+        // Replace with your actual Supabase URL and Anon Key
+        const SUPABASE_URL = 'https://dmnaxcgppclmumdljtyi.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRtbmF4Y2dwcGNsbXVtZGxqdHlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzNzQ5ODksImV4cCI6MjA3MTk1MDk4OX0.8oJ2pPQwgdYyKJXStqa81Jv2EZOtaExffavMegXq6RM';
+        
+        // Create Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get DOM elements
+            const successMessage = document.getElementById('success-message');
+            const messageText = document.getElementById('message-text');
+            const notificationForm = document.getElementById('notification-form');
+            const newsletterForm = document.getElementById('newsletter-form');
+            const notifyBtn = document.getElementById('notify-btn');
+            const notifyText = document.getElementById('notify-text');
+            const notifySpinner = document.getElementById('notify-spinner');
+            const subscribeBtn = document.getElementById('subscribe-btn');
+            const subscribeText = document.getElementById('subscribe-text');
+            const subscribeSpinner = document.getElementById('subscribe-spinner');
+            
+            // Function to show success message
+            function showSuccessMessage(message) {
+                messageText.textContent = message;
+                successMessage.classList.add('show');
+                
+                // Hide message after 4 seconds
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 4000);
+            }
+            
+            // Function to show loading state
+            function setLoading(button, textElement, spinner, isLoading) {
+                if (isLoading) {
+                    textElement.style.display = 'none';
+                    spinner.style.display = 'block';
+                    button.disabled = true;
+                } else {
+                    textElement.style.display = 'block';
+                    spinner.style.display = 'none';
+                    button.disabled = false;
+                }
+            }
+            
+            // Function to save email to Supabase table
+            async function saveEmailToSupabase(table, email) {
+                try {
+                    const { data, error } = await supabase
+                        .from(table)
+                        .insert([{ email: email }]);
+                    
+                    if (error) {
+                        console.error('Error saving email:', error);
+                        return false;
+                    }
+                    
+                    console.log('Email saved successfully:', data);
+                    return true;
+                } catch (error) {
+                    console.error('Exception saving email:', error);
+                    return false;
+                }
+            }
+            
+            // Function to sign up for newsletter using Supabase Auth
+           // Function to save newsletter email to Supabase table
+async function signUpForNewsletter(email) {
+    try {
+        const { data, error } = await supabase
+            .from("newsletter") // your Supabase table
+            .insert([{ email: email }]);
+
+        if (error) {
+            console.error("Error saving newsletter email:", error);
+            return false;
+        }
+
+        console.log("Newsletter email saved:", data);
+        return true;
+    } catch (error) {
+        console.error("Exception saving newsletter email:", error);
+        return false;
+    }
+}
+
+            
+            // Notification form submission
+            notificationForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('notification-email').value;
+                
+                // Validate email
+                if (!email || !email.includes('@')) {
+                    showSuccessMessage('Please enter a valid email address.');
+                    return;
+                }
+                
+                // Show loading state
+                setLoading(notifyBtn, notifyText, notifySpinner, true);
+                
+                // Save to Supabase 'notifications' table
+                const success = await saveEmailToSupabase('notifications', email);
+                
+                // Hide loading state
+                setLoading(notifyBtn, notifyText, notifySpinner, false);
+                
+                if (success) {
+                    showSuccessMessage(`Thank you! We'll notify you at ${email} when we launch.`);
+                    notificationForm.reset();
+                } else {
+                    showSuccessMessage('Sorry, there was an error. Please try again.');
+                }
+            });
+            
+            // Newsletter form submission
+            newsletterForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('newsletter-email').value;
+                
+                // Validate email
+                if (!email || !email.includes('@')) {
+                    showSuccessMessage('Please enter a valid email address.');
+                    return;
+                }
+                
+                // Show loading state
+                setLoading(subscribeBtn, subscribeText, subscribeSpinner, true);
+                
+                // Use Supabase Auth to sign up the user for the newsletter
+                const success = await signUpForNewsletter(email);
+                
+                // Hide loading state
+                setLoading(subscribeBtn, subscribeText, subscribeSpinner, false);
+                
+                if (success) {
+                    showSuccessMessage(`Thank you for subscribing with ${email}! Check your inbox for a confirmation email.`);
+                    newsletterForm.reset();
+                } else {
+                    showSuccessMessage('Sorry, there was an error. Please try again.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
